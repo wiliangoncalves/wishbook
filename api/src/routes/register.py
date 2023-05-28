@@ -23,7 +23,6 @@ class User(BaseModel):
     lastname: str
     email: str
     password: str
-    avatar: str
 
 @register.post('/')
 async def set_register(user:User):
