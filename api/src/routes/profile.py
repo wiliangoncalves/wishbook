@@ -71,4 +71,4 @@ async def put_profile(new_firstname: str | None=None, new_lastname: str | None=N
     data.lastname = new_lastname
     await data.save()
 
-    return {"nada": authorization['token']}
+    return {"profile_token": authorization['token']}
