@@ -1,5 +1,4 @@
 from tortoise import Model, fields
-from tortoise.contrib.pydantic import pydantic_model_creator
 
 class User(Model):
     id = fields.IntField(pk = True, index = True,  AUTO_INCREMENT = True)
@@ -13,13 +12,25 @@ class User(Model):
 class Book(Model):
     id = fields.IntField(pk = True, index = True, AUTO_INCREMENT = True)
     title = fields.CharField(max_length=255, null = False)
-    author = fields.CharField(max_length=255, null = False)
     year = fields.IntField(null = False)
-    genre = fields.TextField()
     read = fields.BooleanField(default=False)
     cover = fields.CharField(max_length=255, default='https://iili.io/HrlBU3F.png')
-    owner = fields.ForeignKeyField("models.User", related_name="Book")
+    description = fields.CharField(max_length=255, null = False)
+    owner = fields.ForeignKeyField("models.User", related_name="owner_book")
 
-class Collection(Model):
+class Book_Author(Model):
+    book = fields.ForeignKeyField("models.Book", related_name="book_author_id")
+    author = fields.ForeignKeyField("models.Author", related_name="author_book_id")
+
+class Book_Genre(Model):
+    book = fields.ForeignKeyField("models.Book", related_name="book_genre_id")
+    genre = fields.ForeignKeyField("models.Genre", related_name="genre_book_id")
+
+class Author(Model):
     id = fields.IntField(pk = True, index = True, AUTO_INCREMENT = True)
-    owner = fields.ForeignKeyField("models.User", related_name="Collection")
+    name = fields.CharField(max_length=255, null = False)
+    # owner = fields.ForeignKeyField("models.User", related_name="owner_book")
+
+class Genre(Model):
+    id = fields.IntField(pk = True, index = True, AUTO_INCREMENT = True)
+    name = fields.CharField(max_length=255, null = False)
