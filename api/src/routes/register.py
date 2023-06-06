@@ -8,8 +8,10 @@ import re
 
 from passlib.hash import pbkdf2_sha256 as bcrypt
 
-from decouple import config
-SECRET_KEY = config('SECRET_KEY')
+import os
+from dotenv import load_dotenv
+load_dotenv()
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 register = FastAPI()
 

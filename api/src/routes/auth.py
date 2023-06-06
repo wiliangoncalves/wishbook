@@ -5,7 +5,9 @@ from jose import jwt
 
 import typing as t
 
-from decouple import config
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 auth = FastAPI()
 
@@ -14,8 +16,8 @@ auth = APIRouter(
     tags=['auth']
 )
 
-SECRET_KEY = config('SECRET_KEY')
-ALGORITHM = config('ALGORITHM')
+SECRET_KEY = os.getenv('SECRET_KEY')
+ALGORITHM = os.getenv('ALGORITHM')
 
 get_bearer_token = HTTPBearer(auto_error=False)
 

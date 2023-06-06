@@ -1,19 +1,23 @@
 from fastapi import FastAPI
+import uvicorn
+
+from src.routes.login import login as login_router
+from src.routes.register import register as register_router
+from src.routes.profile import profile as profile_router
+from src.routes.book import book as book_router
 
 app = FastAPI()
 
-from src.database.database import register_tortoise
+app.include_router(login_router)
+app.include_router(register_router)
+app.include_router(profile_router)
+app.include_router(book_router)
 
-from src.routes.login import login
-from src.routes.register import register
-from src.routes.profile import profile
-from src.routes.book import book
+if __name__ == "__main__":
+    from src.database.db import register_tortoise
 
-@app.on_event("startup")
-async def tortoise_register():
-    register_tortoise
+    @app.on_event("startup")
+    async def startup_event():
+        await register_tortoise()
 
-app.include_router(login)
-app.include_router(register)
-app.include_router(profile)
-app.include_router(book)
+    uvicorn.run("main:app", port=8000, log_level="info")

@@ -6,9 +6,11 @@ from src.models.models import User as Db_User
 from passlib.hash import pbkdf2_sha256 as bcrypt
 from jose import jwt
 
-from decouple import config
-SECRET_KEY = config('SECRET_KEY')
-ALGORITHM = config('ALGORITHM')
+import os
+from dotenv import load_dotenv
+load_dotenv()
+SECRET_KEY = os.getenv('SECRET_KEY')
+ALGORITHM = os.getenv('ALGORITHM')
 
 login = FastAPI()
 
