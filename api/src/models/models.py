@@ -16,21 +16,13 @@ class Book(Model):
     read = fields.BooleanField(default=False)
     cover = fields.CharField(max_length=255, default='https://iili.io/HrlBU3F.png')
     description = fields.CharField(max_length=255, null = False)
+    genre = fields.CharField(max_length=255, null = False)
     owner = fields.ForeignKeyField("models.User", related_name="owner_book")
 
 class Book_Author(Model):
-    book = fields.ForeignKeyField("models.Book", related_name="book_author_id")
-    author = fields.ForeignKeyField("models.Author", related_name="author_book_id")
-
-class Book_Genre(Model):
-    book = fields.ForeignKeyField("models.Book", related_name="book_genre_id")
-    genre = fields.ForeignKeyField("models.Genre", related_name="genre_book_id")
+    book = fields.ForeignKeyField("models.Book", related_name="book_authors")
+    author = fields.ForeignKeyField("models.Author", related_name="author_books")
 
 class Author(Model):
     id = fields.IntField(pk = True, index = True, AUTO_INCREMENT = True)
-    name = fields.CharField(max_length=255, null = False)
-    # owner = fields.ForeignKeyField("models.User", related_name="owner_book")
-
-class Genre(Model):
-    id = fields.IntField(pk = True, index = True, AUTO_INCREMENT = True)
-    name = fields.CharField(max_length=255, null = False)
+    author = fields.CharField(max_length=255, null = False)
