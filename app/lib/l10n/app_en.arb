@@ -1,0 +1,22 @@
+{
+    "language": "English",
+    "@language": {
+        "description": "The current Language"
+    },
+    "password": "Password",
+    "@password": {
+        "description": "Password field"
+    },
+    "forgotPassword": "Forgot Password?",
+    "@forgotPassword": {
+        "description": "Forgot Password?"
+    },
+    "signUp": "Sign up",
+    "@signUp": {
+        "description": "Register screen"
+    },
+    "createAccount": "Don't have an Account?",
+    "@createAccount": {
+        "description": "Don't have an Account?"
+    }
+}
