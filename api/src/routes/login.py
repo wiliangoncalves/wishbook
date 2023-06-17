@@ -24,7 +24,7 @@ class User(BaseModel):
     password: str | None = None
 
 @login.post('/')
-async def post_login(user: User) -> User:
+async def post_login(user: User):
 
     data = await Db_User.filter(email=user.email).values()
 

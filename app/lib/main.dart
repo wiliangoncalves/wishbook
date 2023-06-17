@@ -4,11 +4,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-// void main() {
-//   // await dotenv.load(fileName: "lib/.env");
-//   runApp(const MyApp());
-// }
-
 Future<void> main() async {
   await dotenv.load();
 
@@ -20,15 +15,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'WishBook',
-      localizationsDelegates: [
+      localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: [
+      supportedLocales: const [
         Locale('en'),
         Locale('pt'),
       ],
@@ -36,20 +31,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-// void main() {
-//   runApp(const MaterialApp(
-//     title: 'WishBook',
-//     localizationsDelegates: [
-//       AppLocalizations.delegate,
-//       GlobalMaterialLocalizations.delegate,
-//       GlobalWidgetsLocalizations.delegate,
-//       GlobalCupertinoLocalizations.delegate,
-//     ],
-//     supportedLocales: [
-//       Locale('en'),
-//       Locale('pt'),
-//     ],
-//     home: Login(),
-//   ));
-// }

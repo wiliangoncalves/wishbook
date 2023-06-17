@@ -5,21 +5,26 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-var params =
-    jsonEncode({'email': 'mrhumbert@gmail.com', 'password': 'Nada12345'});
-
-void sendLogin() async {
-  final response = await http.post(Uri.parse('${dotenv.env['API_URL']}/login/'),
-      headers: <String, String>{
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-      },
-      body: params);
-  print(response.body);
-}
-
 class Login extends StatelessWidget {
-  const Login({super.key});
+  Login({super.key});
+
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  void sendLogin() async {
+    final response = await http.post(
+        Uri.parse('${dotenv.env['API_URL']}/login/'),
+        headers: <String, String>{
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        body: jsonEncode({
+          'email': emailController.text,
+          'password': passwordController.text
+        }));
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,17 +55,20 @@ class Login extends StatelessWidget {
             margin: const EdgeInsets.only(bottom: 2.0, top: 100.0),
             child: Column(
               children: [
-                const Padding(
-                    padding: EdgeInsets.all(15),
+                Padding(
+                    padding: const EdgeInsets.all(15),
                     child: TextField(
-                      decoration: InputDecoration(
+                      controller: emailController,
+                      decoration: const InputDecoration(
                           border: UnderlineInputBorder(), hintText: 'E-mail'),
                     )),
                 // ),
-                const Padding(
-                    padding: EdgeInsets.all(15),
+                Padding(
+                    padding: const EdgeInsets.all(15),
                     child: TextField(
-                      decoration: InputDecoration(
+                      controller: passwordController,
+                      obscureText: true,
+                      decoration: const InputDecoration(
                           border: UnderlineInputBorder(), hintText: 'Password'),
                     )),
 
