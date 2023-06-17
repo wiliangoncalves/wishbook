@@ -6,6 +6,11 @@ from src.routes.register import register as register_router
 from src.routes.profile import profile as profile_router
 from src.routes.book import book as book_router
 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+YOUR_IP = os.getenv('YOUR_IP')
+
 app = FastAPI()
 
 app.include_router(login_router)
@@ -20,4 +25,4 @@ if __name__ == "__main__":
     async def startup_event():
         await register_tortoise()
 
-    uvicorn.run("main:app", port=8000, log_level="info")
+    uvicorn.run("main:app", host=YOUR_IP ,port=8000, log_level="info")
