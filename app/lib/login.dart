@@ -1,17 +1,22 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class Login extends StatelessWidget {
-  Login({super.key});
+import 'package:app/home.dart';
 
+import 'storage/secure_storage.dart' show SecureStorage;
+
+class Login extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void sendLogin() async {
+  Login({super.key});
+
+  void sendLogin(BuildContext context) async {
     final response = await http.post(
         Uri.parse('${dotenv.env['API_URL']}/login/'),
         headers: <String, String>{
@@ -22,8 +27,23 @@ class Login extends StatelessWidget {
           'email': emailController.text,
           'password': passwordController.text
         }));
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final token = response.body
+          .toString()
+          .split(',')[1]
+          .toString()
+          .split(' ')[1]
+          .toString()
+          .replaceAll('"', '')
+          .toString()
+          .replaceAll('}', '');
+      await SecureStorage.saveData('token', token);
+      return;
+    } else {
+      await SecureStorage.deleteData('token');
+      return;
+    }
   }
 
   @override
@@ -87,7 +107,24 @@ class Login extends StatelessWidget {
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.fromLTRB(20, 10, 20, 10)),
-                        onPressed: sendLogin,
+                        onPressed: () async {
+                          sendLogin;
+                          final token = await SecureStorage.readData('token');
+                          final response = await http.get(
+                              Uri.parse('${dotenv.env['API_URL']}/profile/'),
+                              headers: {
+                                HttpHeaders.authorizationHeader: 'Bearer $token'
+                              });
+
+                          if (response.statusCode == 200) {
+                            if (context.mounted) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const Home()));
+                            }
+                          }
+                        },
                         child: const Text('LOGIN')),
                   ),
                 ),

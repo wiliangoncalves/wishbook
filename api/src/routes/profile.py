@@ -27,6 +27,7 @@ async def get_profile(authorization: str = Depends(get_auth)):
     )
   else:
     return {
+      "status": status.HTTP_200_OK,
       "avatar": avatar,
       "firstname": firstname,
       "lastname": lastname,
