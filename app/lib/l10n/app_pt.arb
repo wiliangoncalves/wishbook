@@ -3,5 +3,6 @@
     "password": "Senha",
     "forgotPassword": "Esqueceu a Senha?",
     "signUp": "Cadastro",
-    "createAccount": "Não tem uma conta?"
+    "createAccount": "Não tem uma conta?",
+    "fillOutEmail": "Por favor, preencha o E-mail"
 }

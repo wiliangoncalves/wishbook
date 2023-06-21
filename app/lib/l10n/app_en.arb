@@ -18,5 +18,9 @@
     "createAccount": "Don't have an Account?",
     "@createAccount": {
         "description": "Don't have an Account?"
+    },
+    "fillOutEmail": "Please fill out email",
+    "@fillOutEmail": {
+        "description": "Please fill out email"
     }
 }
