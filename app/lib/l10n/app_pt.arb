@@ -4,5 +4,15 @@
     "forgotPassword": "Esqueceu a Senha?",
     "signUp": "Cadastro",
     "createAccount": "Não tem uma conta?",
-    "fillOutEmail": "Por favor, preencha o E-mail"
+    "fillOutEmail": "Por favor, preencha o E-mail",
+    "register": "CADASTRO",
+    "registerFields": "Preencha os campos para se cadastrar",
+    "firstname": "Nome",
+    "lastname": "Sobrenome",
+    "confirmPassword": "Confirmar senha",
+    "alreadyHaveAccount": "Já possui uma conta?",
+    "firstnameLength": "Nome precisa ter pelo menos 4 caracteres",
+    "lastnameLength": "Sobrenome precisa ter pelo menos 4 caracteres",
+    "passwordLength": "Senha precisa ter pelo menos 8 caracteres",
+    "confirmPasswordField": "As senhas não são iguais"
 }

@@ -39,15 +39,15 @@ async def set_register(user:User):
 
     database_check_email = await Db_User.filter(email=user.email).values()
 
-    if len(user.firstname) < 3 or len(user.firstname.strip()) < 3:
+    if len(user.firstname) < 4 or len(user.firstname.strip()) < 4:
         raise HTTPException(
-            detail="Name must be at least 3 characters!",
+            detail="Name must be at least 4 characters!",
             status_code=status.HTTP_400_BAD_REQUEST
         )
 
-    if len(user.lastname) < 3 or len(user.lastname.strip()) < 3:
+    if len(user.lastname) < 4 or len(user.lastname.strip()) < 4:
         raise HTTPException(
-            detail="Lastname must be at least 3 characters!",
+            detail="Lastname must be at least 4 characters!",
             status_code=status.HTTP_400_BAD_REQUEST
         )
 

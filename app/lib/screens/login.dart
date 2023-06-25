@@ -64,25 +64,22 @@ class Login extends State<LoginState> {
     return Scaffold(
       body: ListView(
         children: [
-          Container(
-            // margin: const EdgeInsets.only(top: 100),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Text(
-                  'WISH',
-                  textScaleFactor: 2.0,
-                  style: TextStyle(
-                      color: Color.fromRGBO(0, 166, 255, 100), fontSize: 16.0),
-                ),
-                Text(
-                  'BOOK',
-                  textScaleFactor: 2.0,
-                  style: TextStyle(
-                      color: Color.fromRGBO(52, 63, 75, 100), fontSize: 16.0),
-                )
-              ],
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Text(
+                'WISH',
+                textScaleFactor: 2.0,
+                style: TextStyle(
+                    color: Color.fromRGBO(0, 166, 255, 100), fontSize: 16.0),
+              ),
+              Text(
+                'BOOK',
+                textScaleFactor: 2.0,
+                style: TextStyle(
+                    color: Color.fromRGBO(52, 63, 75, 100), fontSize: 16.0),
+              )
+            ],
           ),
           Container(
             margin: const EdgeInsets.only(bottom: 2.0, top: 100.0),
@@ -120,8 +117,9 @@ class Login extends State<LoginState> {
                     child: TextField(
                       controller: passwordController,
                       obscureText: true,
-                      decoration: const InputDecoration(
-                          border: UnderlineInputBorder(), hintText: 'Password'),
+                      decoration: InputDecoration(
+                          border: const UnderlineInputBorder(),
+                          hintText: AppLocalizations.of(context)!.password),
                     )),
 
                 Container(

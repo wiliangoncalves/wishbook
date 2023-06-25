@@ -22,5 +22,49 @@
     "fillOutEmail": "Please fill out email",
     "@fillOutEmail": {
         "description": "Please fill out email"
+    },
+    "register": "REGISTER",
+    "@register": {
+        "description": "REGISTER"
+    },
+    "registerFields": "Please enter details to register",
+    "@registerFields": {
+        "description": "Please enter details to register"
+    },
+    "firstname": "Firstname",
+    "@firstname": {
+        "description": "Firstname"
+    },
+    "lastname": "Lastname",
+    "@lastname": {
+        "description": "Lastname"
+    },
+    "password": "Password",
+    "@password": {
+        "description": "Password"
+    },
+    "confirmPassword": "Confirm Password",
+    "@confirmPassword": {
+        "description": "Confirm Password"
+    },
+    "alreadyHaveAccount": "Already have an account?",
+    "@alreadyHaveAccount": {
+        "description": "Already have an account?"
+    },
+    "firstnameLength": "Firstname must be at least 4 characters",
+    "@firstnameLength": {
+        "description": "Firstname must be at least 4 characters"
+    },
+    "lastnameLength": "Lastname must be at least 4 characters",
+    "@lastnameLength": {
+        "description": "Lastname must be at least 4 characters"
+    },
+    "passwordLength": "Password must be at least 8 characters",
+    "@passwordLength": {
+        "description": "Password must be at least 8 characters"
+    },
+    "confirmPasswordField": "Password does not match",
+    "@confirmPasswordField": {
+        "description": "Password does not match"
     }
 }
