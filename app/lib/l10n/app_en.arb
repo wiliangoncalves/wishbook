@@ -63,8 +63,20 @@
     "@passwordLength": {
         "description": "Password must be at least 8 characters"
     },
+    "passwordUppercase": "Password should have at least one uppercase letter",
+    "@passwordUppercase": {
+        "description": "Password should have at least one uppercase letter"
+    },
     "confirmPasswordField": "Password does not match",
     "@confirmPasswordField": {
         "description": "Password does not match"
+    },
+    "emailUse": "E-mail is already in use",
+    "@emailUse": {
+        "description": "E-mail is already in use"
+    },
+    "accountSuccess": "Account successfully created",
+    "@accountSuccess": {
+        "description": "Account successfully created!"
     }
 }

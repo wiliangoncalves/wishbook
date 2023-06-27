@@ -57,9 +57,9 @@ async def set_register(user:User):
             status_code=status.HTTP_400_BAD_REQUEST
         )
 
-    if len(database_check_email) != 0:
+    if len(database_check_email) > 0:
         raise HTTPException(
-            detail="E-mail already used!",
+            detail="E-mail is already in use",
             status_code=status.HTTP_400_BAD_REQUEST
         )
 
