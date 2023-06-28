@@ -5,6 +5,7 @@ from src.routes.login import login as login_router
 from src.routes.register import register as register_router
 from src.routes.profile import profile as profile_router
 from src.routes.book import book as book_router
+from src.routes.activate_email import activate_email as activate_email_router
 
 import os
 from dotenv import load_dotenv
@@ -17,6 +18,7 @@ app.include_router(login_router)
 app.include_router(register_router)
 app.include_router(profile_router)
 app.include_router(book_router)
+app.include_router(activate_email_router)
 
 if __name__ == "__main__":
     from src.database.db import register_tortoise

@@ -8,6 +8,10 @@ import re
 
 from passlib.hash import pbkdf2_sha256 as bcrypt
 
+import secrets
+
+from .activate_email import send_activation_email
+
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -87,7 +91,11 @@ async def set_register(user:User):
             status_code=status.HTTP_400_BAD_REQUEST
         )
 
-    await Db_User.create(firstname=user.firstname, lastname=user.lastname, email=user.email, password=hash_password)
+    activate_link = secrets.token_hex(32)
+    await Db_User.create(firstname=user.firstname, lastname=user.lastname, email=user.email, password=hash_password, activate_link=activate_link)
+
+
+    await send_activation_email(user.email, user.firstname, activate_link)
 
     return {
         "status": status.HTTP_200_OK

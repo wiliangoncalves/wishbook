@@ -1,4 +1,5 @@
 from tortoise import Model, fields
+import secrets
 
 class User(Model):
     id = fields.IntField(pk = True, index = True,  AUTO_INCREMENT = True)
@@ -7,6 +8,7 @@ class User(Model):
     lastname = fields.CharField(max_length=50, null = False)
     email = fields.CharField(max_length=200, null = False, unique = True)
     password = fields.CharField(max_length=255, null = False)
+    activate_link = fields.CharField(max_length=64)
     is_verified = fields.BooleanField(default=False)
 
 class Book(Model):
