@@ -269,7 +269,7 @@ class Register extends State<RegisterState> {
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.fromLTRB(50, 10, 50, 10)),
-                      onPressed: () => successDialog(),
+                      onPressed: () => register(context),
                       child: Text(AppLocalizations.of(context)!.register)),
                 ),
                 Row(
