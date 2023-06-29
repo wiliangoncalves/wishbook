@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/screens/login.dart' show LoginState;
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -58,7 +60,10 @@ class Register extends State<RegisterState> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => {
+                Navigator.of(context).pop(),
+                gotoLogin()
+              },
               child: Center(
                 child: Container(
                   width: 200,
@@ -109,6 +114,17 @@ class Register extends State<RegisterState> {
       isValid = false;
       return;
     }
+  }
+
+  void gotoLogin() {
+    if (context.mounted)
+      {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    const LoginState()));
+      }
   }
 
   @override
@@ -216,7 +232,10 @@ class Register extends State<RegisterState> {
                     obscureText: true,
                     controller: passwordController,
                     onChanged: (value) {
-                      if (passwordController.text.length < 8) {
+                      RegExp regEx = RegExp(r"(?=.*[a-z])(?=.*[A-Z])\w+");
+                      final match = regEx.hasMatch(passwordController.text);
+
+                      if (passwordController.text.length < 8 || match == false) {
                         setState(() {
                           _password = false;
                         });
@@ -230,9 +249,6 @@ class Register extends State<RegisterState> {
                       border: const UnderlineInputBorder(),
                       errorText: _password == false
                           ? AppLocalizations.of(context)!.passwordLength
-                          : messageApi ==
-                                  'Password should have at least one uppercase letter'
-                              ? AppLocalizations.of(context)!.passwordUppercase
                               : null,
                       labelText: AppLocalizations.of(context)!.password,
                     ),
@@ -279,16 +295,17 @@ class Register extends State<RegisterState> {
                     Padding(
                         padding: const EdgeInsets.only(left: 5.0),
                         child: InkWell(
-                          onTap: () => {
-                            if (context.mounted)
-                              {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const LoginState()))
-                              }
-                          },
+                          onTap: () => gotoLogin(),
+                          // onTap: () => {
+                          //   if (context.mounted)
+                          //     {
+                          //       Navigator.push(
+                          //           context,
+                          //           MaterialPageRoute(
+                          //               builder: (context) =>
+                          //                   const LoginState()))
+                          //     }
+                          // },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 0, horizontal: 5),

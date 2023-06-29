@@ -13,9 +13,8 @@
     "alreadyHaveAccount": "Já possui uma conta?",
     "firstnameLength": "Nome precisa ter pelo menos 4 caracteres",
     "lastnameLength": "Sobrenome precisa ter pelo menos 4 caracteres",
-    "passwordLength": "Senha precisa ter pelo menos 8 caracteres",
+    "passwordLength": "Senha precisa ter pelo menos 8 caracteres e uma letra maiúscula",
     "confirmPasswordField": "As senhas não são iguais",
-    "passwordUppercase": "Senha deve ter pelo menos uma letra maiúscula",
     "emailUse": "Este E-mail já está sendo usado",
     "accountSuccess": "Conta criada com sucesso"
 }

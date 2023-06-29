@@ -59,13 +59,9 @@
     "@lastnameLength": {
         "description": "Lastname must be at least 4 characters"
     },
-    "passwordLength": "Password must be at least 8 characters",
+    "passwordLength": "Password must be at least 8 characters, one uppercase letter",
     "@passwordLength": {
-        "description": "Password must be at least 8 characters"
-    },
-    "passwordUppercase": "Password should have at least one uppercase letter",
-    "@passwordUppercase": {
-        "description": "Password should have at least one uppercase letter"
+        "description": "Password must be at least 8 characters, one uppercase letter"
     },
     "confirmPasswordField": "Password does not match",
     "@confirmPasswordField": {
