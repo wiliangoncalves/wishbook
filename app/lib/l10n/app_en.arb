@@ -74,5 +74,13 @@
     "accountSuccess": "Account successfully created",
     "@accountSuccess": {
         "description": "Account successfully created!"
+    },
+    "verifyEmail": "Please, verify your e-mail",
+    "@verifyEmail": {
+        "description": "Please, verify your e-mail"
+    },
+    "emailOrPass": "E-mail or password is incorrect",
+    "@emailOrPass": {
+        "description": "E-mail or password is incorrect"
     }
 }

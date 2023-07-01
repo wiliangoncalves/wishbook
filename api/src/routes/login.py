@@ -31,7 +31,7 @@ async def post_login(user: User):
     if len(data) == 0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="E-mail or password is incorret!"
+            detail="E-mail or password is incorrect!"
         )
 
     id = data[0]['id']
@@ -46,7 +46,13 @@ async def post_login(user: User):
     if hashPassword == False:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="E-mail or password is incorret!"
+            detail="E-mail or password is incorrect!"
+        )
+    
+    if data[0]['is_verified'] == False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Please, verify your e-mail"
         )
 
     return {"status": status.HTTP_200_OK, "Authorization": "Bearer "+token_encoded}

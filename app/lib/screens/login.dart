@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:app/screens/register.dart' show RegisterState;
-import 'package:app/screens/home.dart';
+import 'package:app/src/bottomnavigatorbar.dart' show BottomNavigatorBarState;
 
 import '../storage/secure_storage.dart' show SecureStorage;
 
@@ -18,8 +18,99 @@ class LoginState extends StatefulWidget {
 
 class Login extends State<LoginState> {
   var _isValid = false;
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  Future verifyEmailDialog() async {
+    return showDialog(context: context, builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Icon(
+          Icons.warning_amber_sharp,
+          color: Colors.orange,
+          size: 50.0,
+        ),
+        actions: [
+          TextButton(onPressed: () => {
+            Navigator.pop(context)
+          }, child: Center(
+                child: Container(
+                  width: 200,
+                  decoration: BoxDecoration(
+                    color: Colors.orange,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  alignment: Alignment.center,
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'Ok',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),)
+        ],
+      );
+    });
+  }
+
+  Future emailOrPassDialog() async {
+    final localizations = AppLocalizations.of(context);
+    if (localizations == null) {
+      return; // Retorna antecipadamente se localizations for nulo
+    }
+
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Icon(
+            Icons.warning_amber,
+            color: Colors.orange,
+            size: 50,
+          ),
+          content: Text(
+            localizations.emailOrPass,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => {
+                Navigator.of(context).pop(),
+              },
+              child: Center(
+                child: Container(
+                  width: 200,
+                  decoration: BoxDecoration(
+                    color: Colors.orange,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  alignment: Alignment.center,
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'Ok',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
 
   void sendLogin(BuildContext context) async {
     final response = await http.post(
@@ -32,11 +123,14 @@ class Login extends State<LoginState> {
           'email': emailController.text,
           'password': passwordController.text
         }));
+
+    if(response.statusCode == 400 && json.decode(response.body)['detail'] == 'Please, verify your e-mail'){
+      verifyEmailDialog();
+    }
+    if(response.statusCode == 400 && json.decode(response.body)['detail'] == 'E-mail or password is incorrect!'){
+      emailOrPassDialog();
+    }
     if (response.statusCode == 200) {
-      print(response.body);
-      setState(() {
-        _isValid = true;
-      });
       final token = response.body
           .toString()
           .split(',')[1]
@@ -48,13 +142,21 @@ class Login extends State<LoginState> {
           .replaceAll('}', '');
       await SecureStorage.saveData('token', token);
 
-      if (context.mounted) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const Home()));
+      if(context.mounted){
+        Navigator
+      .of(context)
+        .pushReplacement(
+          MaterialPageRoute(
+            builder: (BuildContext context) => const BottomNavigatorBarState()
+        )
+       );
       }
+      // if (context.mounted) {
+      //   Navigator.push(
+      //       context, MaterialPageRoute(builder: (context) => const BottomNavigatorBarState()));
+      // }
       return;
     } else {
-      _isValid = false;
       await SecureStorage.deleteData('token');
       return;
     }
@@ -65,9 +167,9 @@ class Login extends State<LoginState> {
     return Scaffold(
       body: ListView(
         children: [
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               Text(
                 'WISH',
                 textScaleFactor: 2.0,
@@ -107,9 +209,7 @@ class Login extends State<LoginState> {
                       decoration: InputDecoration(
                           border: const UnderlineInputBorder(),
                           errorBorder: const UnderlineInputBorder(),
-                          errorText: _isValid == true
-                              ? null
-                              : AppLocalizations.of(context)!.fillOutEmail,
+                          errorText: _isValid == false ? AppLocalizations.of(context)!.fillOutEmail: null,
                           hintText: 'E-mail'),
                     )),
                 // ),

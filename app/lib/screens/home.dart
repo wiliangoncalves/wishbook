@@ -5,17 +5,8 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(
-        children: [
-          const Text('Home'),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Back'))
-        ],
-      ),
+    return const Scaffold(
+      body: Text('HOME'),
     );
   }
 }
