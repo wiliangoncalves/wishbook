@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:app/screens/home.dart';
 import 'package:app/screens/profile.dart' show ProfileState;
+import 'package:app/screens/profile.dart' show getProfile;
 
 class BottomNavigatorBarState extends StatefulWidget {
   const BottomNavigatorBarState({super.key});
@@ -31,6 +32,7 @@ class BottomNavigatorBar extends State<BottomNavigatorBarState> {
 
   @override
   Widget build(BuildContext context) {
+    getProfile();
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
@@ -47,21 +49,21 @@ class BottomNavigatorBar extends State<BottomNavigatorBarState> {
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
             label: 'Books',
-            backgroundColor: Colors.blue,
+            backgroundColor: Colors.blueGrey,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.collections_bookmark),
             label: 'Collections',
-            backgroundColor: Colors.green
+            backgroundColor: Colors.blueGrey
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
-            backgroundColor: Colors.yellow
+            backgroundColor: Colors.blueGrey,
           )
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.black,
+        selectedItemColor: const Color.fromARGB(255, 6, 63, 92),
         onTap: _onTappedItem,
       ),
     ));

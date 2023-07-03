@@ -82,5 +82,21 @@
     "emailOrPass": "E-mail or password is incorrect",
     "@emailOrPass": {
         "description": "E-mail or password is incorrect"
+    },
+    "save": "Save",
+    "@save": {
+        "description": "Save"
+    },
+    "signOut": "Sign out",
+    "@signOut": {
+        "description": "Sign out"
+    },
+    "deleteAccount": "Delete account",
+    "@deleteAccount": {
+        "description": "Delete account"
+    },
+    "profile": "PROFILE",
+    "@profile": {
+        "description": "Profile"
     }
 }

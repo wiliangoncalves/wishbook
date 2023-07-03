@@ -151,10 +151,6 @@ class Login extends State<LoginState> {
         )
        );
       }
-      // if (context.mounted) {
-      //   Navigator.push(
-      //       context, MaterialPageRoute(builder: (context) => const BottomNavigatorBarState()));
-      // }
       return;
     } else {
       await SecureStorage.deleteData('token');

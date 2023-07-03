@@ -18,5 +18,9 @@
     "emailUse": "Este E-mail já está sendo usado",
     "accountSuccess": "Conta criada com sucesso",
     "verifyEmail": "Por favor, verifique seu e-mail",
-    "emailOrPass": "E-mail ou senha incorreto"
+    "emailOrPass": "E-mail ou senha incorreto",
+    "save": "Salvar",
+    "signOut": "Sair",
+    "deleteAccount": "Deletar conta",
+    "profile": "PERFIL"
 }
