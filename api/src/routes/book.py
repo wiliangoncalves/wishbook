@@ -1,4 +1,5 @@
 from fastapi import FastAPI, APIRouter, Depends, HTTPException, status, Query
+from typing import Optional
 from src.routes.auth import get_auth
 
 from typing import List
@@ -16,7 +17,7 @@ book = APIRouter(
 )
 
 @book.get('/')
-async def get_book(read: bool, title: str | None=None, genre: List[str] = Query(None), authorization: str = Depends(get_auth)):
+async def get_book(read: bool, title: Optional[str] = None, genre: List[str] = Query(None), authorization: str = Depends(get_auth)):
   book = await Db_Book.filter(owner_id=authorization['token']).values()
 
   books = await Db_Book.all().filter(owner_id=authorization['token']).prefetch_related('book_authors__author')
@@ -64,7 +65,7 @@ async def get_book(read: bool, title: str | None=None, genre: List[str] = Query(
   return {"data": result}
 
 @book.post('/')
-async def set_book(title: str, year: int, read: bool, description, author: List[str] = Query(), genre: List[str] = Query(), cover: str | None=None, authorization: str = Depends(get_auth)):
+async def set_book(title: str, year: int, read: bool, description, author: List[str] = Query(), genre: List[str] = Query(), cover: Optional[str] = None, authorization: str = Depends(get_auth)):
 
   if cover == None:
     cover = 'https://iili.io/HrlBU3F.png'
@@ -105,13 +106,13 @@ async def set_book(title: str, year: int, read: bool, description, author: List[
 @book.put('/')
 async def put_book(
   book_id : int, 
-  title: str | None=None, 
-  author_id: int | None=None,
-  new_author: str | None=None,
-  year: int | None=None, 
-  read: bool | None=None, 
-  cover: str | None=None, 
-  genre: List[str] = Query(None),
+  title: Optional[str] = None, 
+  author_id: Optional[int] = None,
+  new_author: Optional[str] = None,
+  year: Optional[int] = None, 
+  read: Optional[bool] = None, 
+  cover: Optional[str] = None, 
+  genre: Optional[str] = None,
   authorization: str = Depends(get_auth)
 ):
   data = await Db_Book.filter(owner_id=authorization['token']).get(id=book_id)

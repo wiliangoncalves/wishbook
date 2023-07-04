@@ -1,4 +1,5 @@
-from fastapi import FastAPI, APIRouter, Depends, HTTPException, status, UploadFile
+from fastapi import FastAPI, APIRouter, Depends, HTTPException, status
+from typing import Optional
 from src.routes.auth import get_auth
 
 from src.models.models import User as Db_User
@@ -35,7 +36,7 @@ async def get_profile(authorization: str = Depends(get_auth)):
     }
 
 @profile.put('/')
-async def put_profile(new_firstname: str | None=None, new_lastname: str | None=None, new_avatar: str | None=None, authorization: str = Depends(get_auth)):
+async def put_profile(new_firstname: Optional[str] = None, new_lastname: Optional[str] = None, new_avatar: Optional[str] = None, authorization: str = Depends(get_auth)):
   data = await Db_User.get(id=authorization['token'])
 
   is_verified = data.is_verified
