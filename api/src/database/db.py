@@ -16,7 +16,7 @@ PORT = os.getenv('PORT')
 app = FastAPI()
 
 # Defina as configurações do banco de dados
-db_url = f"postgres://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}"
+db_url = f"postgres://{USER}:{PASSWORD}@{HOST}/{DATABASE}"
 db_config = {
     "connections": {"default": db_url},
     "apps": {
