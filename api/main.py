@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
 from src.routes.login import login as login_router
@@ -14,6 +15,16 @@ YOUR_IP = os.getenv('YOUR_IP')
 
 app = FastAPI()
 
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(login_router)
 app.include_router(register_router)
 app.include_router(profile_router)
@@ -27,4 +38,4 @@ if __name__ == "__main__":
     async def startup_event():
         await register_tortoise()
 
-    # uvicorn.run("main:app", host=YOUR_IP ,port=10000, log_level="info")
+    uvicorn.run("main:app", host=YOUR_IP ,port=8000, log_level="info")
