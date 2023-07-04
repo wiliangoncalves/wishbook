@@ -1,5 +1,6 @@
 from fastapi import FastAPI, APIRouter, status, HTTPException
 from pydantic import BaseModel
+from typing import Optional
 
 from src.models.models import User as Db_User
 
@@ -20,8 +21,8 @@ login = APIRouter(
 )
 
 class User(BaseModel):
-    email: str | None = None
-    password: str | None = None
+    email: str
+    password: str
 
 @login.post('/')
 async def post_login(user: User):
