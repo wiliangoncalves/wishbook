@@ -27,4 +27,4 @@ if __name__ == "__main__":
     async def startup_event():
         await register_tortoise()
 
-    # uvicorn.run("main:app", host=YOUR_IP ,port=8000, log_level="info")
+    uvicorn.run("main:app", host=YOUR_IP ,port=8000, log_level="info")
