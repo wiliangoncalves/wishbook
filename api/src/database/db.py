@@ -1,7 +1,6 @@
-from main import app
+from fastapi import FastAPI
 from tortoise.contrib.fastapi import register_tortoise
 from tortoise import Tortoise
-
 import os
 from dotenv import load_dotenv
 
@@ -13,24 +12,39 @@ DATABASE = os.getenv('DATABASE')
 PASSWORD = os.getenv('PASSWORD')
 PORT = os.getenv('PORT')
 
-async def init():
-    await Tortoise.init(
-        db_url=f"postgres://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}",
-        modules={"models": ["src.models.models"]},
-    )
+# Crie uma instância do aplicativo FastAPI
+app = FastAPI()
 
+# Defina as configurações do banco de dados
+db_url = f"postgres://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}"
+db_config = {
+    "connections": {"default": db_url},
+    "apps": {
+        "models": {
+            "models": ["src.models.models"],
+            "default_connection": "default",
+        },
+    },
+}
+
+# Inicialize o Tortoise ORM e gere os esquemas
+async def init_db():
+    await Tortoise.init(config=db_config)
     await Tortoise.generate_schemas()
 
-# Inicialize o Tortoise ORM antes de registrar as rotas do FastAPI
-app.add_event_handler("startup", init)
+# Adicione o evento de inicialização do aplicativo para inicializar o banco de dados
+@app.on_event("startup")
+async def startup_event():
+    await init_db()
 
+# Registre as rotas do Tortoise ORM com o FastAPI
 register_tortoise(
     app,
-    db_url=f"postgres://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}",
-    modules={"models": ["src.models.models"]},
+    config=db_config,
     generate_schemas=True,
     add_exception_handlers=True,
 )
+
 
 # from main import app
 
