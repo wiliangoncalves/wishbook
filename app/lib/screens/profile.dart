@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import '../storage/secure_storage.dart' show SecureStorage;
 import 'package:app/screens/login.dart' show LoginState;
 import 'package:app/profileclasses/profiledata.dart' show ProfileClass;
+import 'package:image_picker/image_picker.dart';
 
 Future getProfile() async {
     final token = await SecureStorage.readData('token');
@@ -36,6 +37,76 @@ class Profile extends State<ProfileState> {
   final TextEditingController firstnameController = TextEditingController();
   final TextEditingController lastnameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+
+  XFile? _selectedImage;
+
+  Future<void> selectImage() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+
+      setState(() {
+        _selectedImage = image;
+      });
+
+    setState(() {
+      _selectedImage = image;
+    });
+
+    if (image != null) {
+      String imagePath = image.path;
+      // Agora você pode usar o caminho da imagem conforme necessário
+      print('Caminho da imagem: $imagePath');
+      // Aqui você pode fazer o upload da imagem para o servidor ou realizar outras ações com a imagem selecionada
+      // O caminho da imagem selecionada pode ser acessado através de "image.path"
+    }
+  }
+
+  Future<void> uploadImage(String imagePath) async {
+    final token = await SecureStorage.readData('token');
+    final response = await http.put(
+      Uri.parse('${dotenv.env['API_URL']}/profile/?new_firstname=${firstnameController.text}&new_lastname=${lastnameController.text}'),
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer $token',
+        'Content-Type': 'application/json; charset=UTF-8'
+      });
+
+    final responseJson = jsonDecode(response.body);
+
+    if(responseJson['status'] == 200){
+      setState(() {
+        profile.setName = firstnameController.text;
+        profile.setLastname = lastnameController.text;
+      });
+    }
+    try {
+      var request = http.MultipartRequest('PUT', Uri.parse('${dotenv.env['API_URL']}/profile/'));
+
+      // Set the field name for the image
+      request.fields['imageField'] = 'image';
+
+      // Create a file from the image path
+      var imageFile = File(imagePath);
+
+      // Add the image file to the request
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'image',
+          imageFile.path,
+        ),
+      );
+
+      // Send the request and get the response
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        print('Image uploaded successfully');
+      } else {
+        print('Failed to upload image. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error uploading image: $error');
+    }
+  }
 
   @override
   void initState() {
@@ -84,6 +155,25 @@ class Profile extends State<ProfileState> {
     }
   }
 
+  void save() async {
+    final token = await SecureStorage.readData('token');
+    final response = await http.put(
+      Uri.parse('${dotenv.env['API_URL']}/profile/?new_firstname=${firstnameController.text}&new_lastname=${lastnameController.text}'),
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer $token',
+        'Content-Type': 'application/json; charset=UTF-8'
+      });
+
+    final responseJson = jsonDecode(response.body);
+
+    if(responseJson['status'] == 200){
+      setState(() {
+        profile.setName = firstnameController.text;
+        profile.setLastname = lastnameController.text;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,9 +193,41 @@ class Profile extends State<ProfileState> {
                     Row(
                       children: [
                         SizedBox(
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(50.0),
-                              child: Image.asset('images/waco.jpg', scale: 6)),
+                          child:
+                          Column(
+                            children: [
+                              ElevatedButton(onPressed: selectImage, child: Text('Aperte')),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(50.0),
+                                child: Column(
+                                  children: [
+                                    if (_selectedImage != null)
+                                      Image.file(
+                                        File(_selectedImage!.path),
+                                        width: 200,
+                                        height: 200,
+                                      ),
+                                  ],
+                                ))
+                            ],
+                          )
+                          // InkWell(
+                          //   onTap: selectImage,
+                          //   child: 
+                          //     ClipRRect(
+                          //       borderRadius: BorderRadius.circular(50.0),
+                          //       child: Column(
+                          //         children: [
+                          //           if (_selectedImage != null)
+                          //             Image.file(
+                          //               File(_selectedImage!.path),
+                          //               width: 200,
+                          //               height: 200,
+                          //             ),
+                          //         ],
+                          //       )
+                          //       // child: Image.asset('images/waco.jpg', scale: 6)
+                          // )),
                         ),
                         Expanded(
                           child: SizedBox(
@@ -153,6 +275,8 @@ class Profile extends State<ProfileState> {
                         child:  TextFormField(
                         controller: emailController..text=profile.getEmail,
                         decoration: const InputDecoration(
+                          enabled: false, 
+                          disabledBorder: UnderlineInputBorder(),
                           labelText: 'E-mail',
                           ),
                         ),
@@ -161,18 +285,18 @@ class Profile extends State<ProfileState> {
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.only(top: 50),
+                  margin: const EdgeInsets.only(top: 30),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       ElevatedButton(onPressed: signOut, style: ElevatedButton.styleFrom(backgroundColor: Colors.orange) ,child: Text(AppLocalizations.of(context)!.signOut)),
-                      ElevatedButton(onPressed: (){}, child: Text(AppLocalizations.of(context)!.save)),
+                      ElevatedButton(onPressed: save, child: Text(AppLocalizations.of(context)!.save)),
                     ],
                   ),
                 ),
                
                 Container(
-                  margin: const EdgeInsets.only(top: 50),
+                  margin: const EdgeInsets.only(top: 30),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
