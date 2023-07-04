@@ -1,5 +1,4 @@
 from tortoise import Model, fields
-import secrets
 
 class User(Model):
     id = fields.IntField(pk = True, index = True,  AUTO_INCREMENT = True)
