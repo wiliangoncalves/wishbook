@@ -15,13 +15,13 @@ PASSWORD = os.getenv('PASSWORD')
 Tortoise.init_models(["src.models.models"], "models")
 async def init():
     await Tortoise.init(
-        db_url='postgres://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}',
+        db_url='postgres://{USER}:{PASSWORD}@{HOST}:5432/{DATABASE}',
         modules={"models": ["src.models.models"]},
     )
 
 register_tortoise(
     app,
-    db_url=f"postgres://{os.getenv('USER')}:{os.getenv('PASSWORD')}@{os.getenv('HOST')}:{os.getenv('PORT')}/{os.getenv('DATABASE')}",
+    db_url=f"postgres://{os.getenv('ROOT')}:{os.getenv('PASSWORD')}@{os.getenv('HOST')}:5432/{os.getenv('DATABASE')}",
     modules={"models": ["src.models.models"]},
     generate_schemas=True,
     add_exception_handlers=True,
