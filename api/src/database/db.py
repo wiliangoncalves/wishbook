@@ -21,7 +21,7 @@ async def init():
 
 register_tortoise(
     app,
-    db_url=f"postgres://{os.getenv('ROOT')}:{os.getenv('PASSWORD')}@{os.getenv('HOST')}:{os.getenv('PORT')}/{os.getenv('DATABASE')}",
+    db_url=f"postgres://{os.getenv('USER')}:{os.getenv('PASSWORD')}@{os.getenv('HOST')}:{os.getenv('PORT')}/{os.getenv('DATABASE')}",
     modules={"models": ["src.models.models"]},
     generate_schemas=True,
     add_exception_handlers=True,
