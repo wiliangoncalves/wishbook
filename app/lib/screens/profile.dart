@@ -8,6 +8,7 @@ import '../storage/secure_storage.dart' show SecureStorage;
 import 'package:app/screens/login.dart' show LoginState;
 import 'package:app/profileclasses/profiledata.dart' show ProfileClass;
 import 'package:image_picker/image_picker.dart';
+import 'package:http_parser/http_parser.dart' show MediaType;
 
 Future getProfile() async {
     final token = await SecureStorage.readData('token');
@@ -41,70 +42,36 @@ class Profile extends State<ProfileState> {
   XFile? _selectedImage;
 
   Future<void> selectImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-
-      setState(() {
-        _selectedImage = image;
-      });
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       _selectedImage = image;
     });
-
-    if (image != null) {
-      String imagePath = image.path;
-      // Agora você pode usar o caminho da imagem conforme necessário
-      print('Caminho da imagem: $imagePath');
-      // Aqui você pode fazer o upload da imagem para o servidor ou realizar outras ações com a imagem selecionada
-      // O caminho da imagem selecionada pode ser acessado através de "image.path"
-    }
   }
 
-  Future<void> uploadImage(String imagePath) async {
-    final token = await SecureStorage.readData('token');
-    final response = await http.put(
-      Uri.parse('${dotenv.env['API_URL']}/profile/?new_firstname=${firstnameController.text}&new_lastname=${lastnameController.text}'),
-      headers: {
-        HttpHeaders.authorizationHeader: 'Bearer $token',
-        'Content-Type': 'application/json; charset=UTF-8'
-      });
+  Future<void> uploadImage() async {
+    if (_selectedImage != null) {
+      File file = File(_selectedImage!.path);
 
-    final responseJson = jsonDecode(response.body);
+      var url = Uri.parse('https://api.imgbb.com/1/upload');
+      var request = http.MultipartRequest('POST', url);
+      request.fields['key'] = '${dotenv.env['IMGBB_API_KEY']}';
+      request.files.add(await http.MultipartFile.fromPath('image', file.path,
+          contentType: MediaType('image', 'jpeg')));
 
-    if(responseJson['status'] == 200){
-      setState(() {
-        profile.setName = firstnameController.text;
-        profile.setLastname = lastnameController.text;
-      });
-    }
-    try {
-      var request = http.MultipartRequest('PUT', Uri.parse('${dotenv.env['API_URL']}/profile/'));
-
-      // Set the field name for the image
-      request.fields['imageField'] = 'image';
-
-      // Create a file from the image path
-      var imageFile = File(imagePath);
-
-      // Add the image file to the request
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'image',
-          imageFile.path,
-        ),
-      );
-
-      // Send the request and get the response
       var response = await request.send();
-
       if (response.statusCode == 200) {
-        print('Image uploaded successfully');
+        // Sucesso
+        var responseString = await response.stream.transform(utf8.decoder).join();
+        var responseData = json.decode(responseString);
+        print(responseData['data']['url']);
       } else {
-        print('Failed to upload image. Status code: ${response.statusCode}');
+        // Erro
+        print('Erro durante o upload da imagem. Código de status: ${response.statusCode}');
       }
-    } catch (error) {
-      print('Error uploading image: $error');
+    } else {
+      print('Nenhuma imagem selecionada.');
     }
   }
 
@@ -157,6 +124,7 @@ class Profile extends State<ProfileState> {
 
   void save() async {
     final token = await SecureStorage.readData('token');
+
     final response = await http.put(
       Uri.parse('${dotenv.env['API_URL']}/profile/?new_firstname=${firstnameController.text}&new_lastname=${lastnameController.text}'),
       headers: {
@@ -290,7 +258,7 @@ class Profile extends State<ProfileState> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       ElevatedButton(onPressed: signOut, style: ElevatedButton.styleFrom(backgroundColor: Colors.orange) ,child: Text(AppLocalizations.of(context)!.signOut)),
-                      ElevatedButton(onPressed: save, child: Text(AppLocalizations.of(context)!.save)),
+                      ElevatedButton(onPressed: uploadImage, child: Text(AppLocalizations.of(context)!.save)),
                     ],
                   ),
                 ),
