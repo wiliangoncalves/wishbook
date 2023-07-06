@@ -11,21 +11,22 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http_parser/http_parser.dart' show MediaType;
 
 Future getProfile() async {
-    final token = await SecureStorage.readData('token');
-    final response = await http.get(
-      Uri.parse('${dotenv.env['API_URL']}/profile/'),
-      headers: {
-        HttpHeaders.authorizationHeader: 'Bearer $token',
-      });
+  final token = await SecureStorage.readData('token');
+  final response = await http.get(
+    Uri.parse('${dotenv.env['API_URL']}/profile/'),
+    headers: {
+      HttpHeaders.authorizationHeader: 'Bearer $token',
+    });
 
-    final responseJson = jsonDecode(response.body);
+  final responseJson = jsonDecode(response.body);
 
-    if(responseJson['status'] == 200){
-      await SecureStorage.saveData('firstname', responseJson['firstname']);
-      await SecureStorage.saveData('lastname', responseJson['lastname']);
-      await SecureStorage.saveData('email', responseJson['email']);
-    }
+  if(responseJson['status'] == 200){
+    await SecureStorage.saveData('firstname', responseJson['firstname']);
+    await SecureStorage.saveData('lastname', responseJson['lastname']);
+    await SecureStorage.saveData('email', responseJson['email']);
+    await SecureStorage.saveData('avatar', responseJson['avatar']);
   }
+}
 
 class ProfileState extends StatefulWidget {
   const ProfileState({super.key});
@@ -38,6 +39,7 @@ class Profile extends State<ProfileState> {
   final TextEditingController firstnameController = TextEditingController();
   final TextEditingController lastnameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController avatarController = TextEditingController();
 
   XFile? _selectedImage;
 
@@ -62,10 +64,25 @@ class Profile extends State<ProfileState> {
 
       var response = await request.send();
       if (response.statusCode == 200) {
-        // Sucesso
         var responseString = await response.stream.transform(utf8.decoder).join();
         var responseData = json.decode(responseString);
-        print(responseData['data']['url']);
+
+        final token = await SecureStorage.readData('token');
+
+        final responseAvatar = await http.put(
+          Uri.parse('${dotenv.env['API_URL']}/profile/?new_avatar=${responseData['data']['url']}'),
+          headers: {
+            HttpHeaders.authorizationHeader: 'Bearer $token',
+            'Content-Type': 'application/json; charset=UTF-8'
+          });
+
+        final responseAvatarJson = jsonDecode(responseAvatar.body);
+
+        if(responseAvatarJson['status'] == 200){
+          setState(() {
+            profile.setAvatar = avatarController.text;
+          });
+        }
       } else {
         // Erro
         print('Erro durante o upload da imagem. Código de status: ${response.statusCode}');
@@ -83,14 +100,22 @@ class Profile extends State<ProfileState> {
         profile.setName=value ?? '';
       });
     });
+
     SecureStorage.readData('lastname').then((value) {
       setState(() {
         profile.setLastname=value ?? '';
       });
     });
+
     SecureStorage.readData('email').then((value){
       setState(() {
         profile.setEmail=value ?? '';
+      });
+    });
+    
+    SecureStorage.readData('avatar').then((value) {
+      setState(() {
+        profile.setAvatar=value ?? '';
       });
     });
   }
@@ -126,7 +151,7 @@ class Profile extends State<ProfileState> {
     final token = await SecureStorage.readData('token');
 
     final response = await http.put(
-      Uri.parse('${dotenv.env['API_URL']}/profile/?new_firstname=${firstnameController.text}&new_lastname=${lastnameController.text}'),
+      Uri.parse('${dotenv.env['API_URL']}/profile/?new_firstname=${firstnameController.text}&new_lastname=${lastnameController.text}&new_avatar=${avatarController.text}'),
       headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         'Content-Type': 'application/json; charset=UTF-8'
@@ -140,6 +165,7 @@ class Profile extends State<ProfileState> {
         profile.setLastname = lastnameController.text;
       });
     }
+    uploadImage();
   }
 
   @override
@@ -160,42 +186,38 @@ class Profile extends State<ProfileState> {
                   child:
                     Row(
                       children: [
-                        SizedBox(
+                        SingleChildScrollView(
                           child:
-                          Column(
-                            children: [
-                              ElevatedButton(onPressed: selectImage, child: Text('Aperte')),
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(50.0),
-                                child: Column(
-                                  children: [
-                                    if (_selectedImage != null)
-                                      Image.file(
-                                        File(_selectedImage!.path),
-                                        width: 200,
-                                        height: 200,
-                                      ),
-                                  ],
-                                ))
-                            ],
-                          )
-                          // InkWell(
-                          //   onTap: selectImage,
-                          //   child: 
-                          //     ClipRRect(
-                          //       borderRadius: BorderRadius.circular(50.0),
-                          //       child: Column(
-                          //         children: [
-                          //           if (_selectedImage != null)
-                          //             Image.file(
-                          //               File(_selectedImage!.path),
-                          //               width: 200,
-                          //               height: 200,
-                          //             ),
-                          //         ],
-                          //       )
-                          //       // child: Image.asset('images/waco.jpg', scale: 6)
-                          // )),
+                            InkWell(
+                              onTap: selectImage,
+                              child: _selectedImage != null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(70), // Defina o raio desejado
+                                  child: Image.file(
+                                    File(_selectedImage!.path),
+                                    height: 90,
+                                    scale: 5,
+                                  ),
+                                )
+                              : FutureBuilder(
+                                  future: Future.delayed(const Duration(seconds: 1)), // Adiciona um atraso de 1 segundo
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return const CircularProgressIndicator();
+                                    } else {
+                                      // Após o atraso, carrega a imagem da rede
+                                      return ClipRRect(
+                                        borderRadius: BorderRadius.circular(70),
+                                        child: Image.network(
+                                          profile.getAvatar,
+                                          height: 90,
+                                          scale: 5,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                            ),
                         ),
                         Expanded(
                           child: SizedBox(
@@ -258,7 +280,7 @@ class Profile extends State<ProfileState> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       ElevatedButton(onPressed: signOut, style: ElevatedButton.styleFrom(backgroundColor: Colors.orange) ,child: Text(AppLocalizations.of(context)!.signOut)),
-                      ElevatedButton(onPressed: uploadImage, child: Text(AppLocalizations.of(context)!.save)),
+                      ElevatedButton(onPressed: save, child: Text(AppLocalizations.of(context)!.save)),
                     ],
                   ),
                 ),

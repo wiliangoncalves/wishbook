@@ -3,6 +3,7 @@ class ProfileClass {
   String _firstname = '';
   String _lastname = '';
   String _email = '';
+  String _avatar = '';
  
   String get getFirstname {
     return _firstname;
@@ -26,5 +27,13 @@ class ProfileClass {
 
   set setEmail(String email) {
     _email = email;
+  }
+
+  String get getAvatar {
+    return _avatar;
+  }
+
+  set setAvatar(String avatar) {
+    _avatar = avatar;
   }
 }
