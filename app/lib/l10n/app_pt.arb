@@ -22,5 +22,8 @@
     "save": "Salvar",
     "signOut": "Sair",
     "deleteAccount": "Deletar conta",
-    "profile": "PERFIL"
+    "profile": "PERFIL",
+    "sureToDelete": "Você tem certeza que quer deletar",
+    "sureToSignOut": "Tem certeza que deseja deslogar",
+    "yes": "SIM"
 }

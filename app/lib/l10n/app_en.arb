@@ -98,5 +98,17 @@
     "profile": "PROFILE",
     "@profile": {
         "description": "Profile"
+    },
+    "sureToSignOut": "Are you sure to Sign Out",
+    "@sureToSignOut": {
+        "description": "Are you sure to Sign Out"
+    },
+    "sureToDelete": "Are you sure to delete it",
+    "@sureToDelete": {
+        "description": "Are you sure to delete it"
+    },
+    "yes": "YES",
+    "@yes": {
+        "description": "Yes"
     }
 }

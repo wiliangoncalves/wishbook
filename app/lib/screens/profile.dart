@@ -9,6 +9,7 @@ import 'package:app/screens/login.dart' show LoginState;
 import 'package:app/profileclasses/profiledata.dart' show ProfileClass;
 import 'package:image_picker/image_picker.dart';
 import 'package:http_parser/http_parser.dart' show MediaType;
+import 'package:logger/logger.dart';
 
 Future getProfile() async {
   final token = await SecureStorage.readData('token');
@@ -40,6 +41,7 @@ class Profile extends State<ProfileState> {
   final TextEditingController lastnameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController avatarController = TextEditingController();
+  var logger = Logger();
 
   XFile? _selectedImage;
 
@@ -84,11 +86,10 @@ class Profile extends State<ProfileState> {
           });
         }
       } else {
-        // Erro
-        print('Erro durante o upload da imagem. Código de status: ${response.statusCode}');
+        logger.w('Image error upload. statusCode: ${response.statusCode}');
       }
     } else {
-      print('Nenhuma imagem selecionada.');
+      logger.w('None image selected!');
     }
   }
 
@@ -136,15 +137,127 @@ class Profile extends State<ProfileState> {
       }
   }
 
+  Future confirmSignOut() async {
+    final localizations = AppLocalizations.of(context);
+    if(localizations == null) {
+      return;
+    }
+
+    return showDialog(context: context, builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Icon(
+          Icons.warning_amber_outlined,
+          color: Colors.orange,
+          size: 50.0
+        ),
+        content: Text(
+          '${localizations.sureToSignOut}?',
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () {
+            Navigator.of(context).pop();
+            signOut();
+          }, child: Center(
+            child: Container(
+              width: 200,
+              decoration: BoxDecoration(
+                color: Colors.orange,
+                borderRadius: BorderRadius.circular(20)
+              ),
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  localizations.yes,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white)
+                ),
+              ),
+            ),
+          ))
+        ],
+      );
+    });
+  }
+
   void signOut() async {
     await SecureStorage.deleteAllData();
-    if(context.mounted){
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                const LoginState()));
+    gotoLogin();
+  }
+
+  void gotoLogin() {
+    if (context.mounted)
+      {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    const LoginState()));
+      }
+  }
+
+  void deleteAccount() async {
+    final token = await SecureStorage.readData('token');
+
+    final response = await http.delete(Uri.parse('${dotenv.env['API_URL']}/profile/'), headers: {HttpHeaders.authorizationHeader: 'Bearer $token'});
+
+    final responseJson = jsonDecode(response.body);
+
+    if(responseJson['status'] == 200) {
+      await SecureStorage.deleteAllData();
+      gotoLogin();
     }
+  }
+
+  Future confirmDelete() async {
+    final localizations = AppLocalizations.of(context);
+    if (localizations == null) {
+      return; // Retorna antecipadamente se localizations for nulo
+    }
+    return showDialog(context: context, builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Icon(
+          Icons.warning_amber_sharp,
+          color: Colors.red,
+          size: 50.0
+        ),
+        content: Text(
+          '${localizations.sureToDelete}?',
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18
+          )
+        ),
+        actions: [
+          TextButton(onPressed: () => {
+            Navigator.of(context).pop(),
+            deleteAccount(),
+          }, child: Center(
+            child: Container(
+              width: 200,
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(20)
+              ),
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(localizations.yes, 
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white)
+                ),
+              ),
+            ),
+          ))
+        ],
+      );
+    });
   }
 
   void save() async {
@@ -163,6 +276,7 @@ class Profile extends State<ProfileState> {
       setState(() {
         profile.setName = firstnameController.text;
         profile.setLastname = lastnameController.text;
+        profile.setAvatar = avatarController.text;
       });
     }
     uploadImage();
@@ -182,7 +296,7 @@ class Profile extends State<ProfileState> {
                   margin: const EdgeInsets.only(bottom: 25),
                   child: Text(AppLocalizations.of(context)!.profile, style: const TextStyle(fontSize: 20),)),
                 Container(
-                  margin: const EdgeInsets.only(left: 20, bottom: 15),
+                  margin: const EdgeInsets.only(left: 0, bottom: 0),
                   child:
                     Row(
                       children: [
@@ -209,7 +323,8 @@ class Profile extends State<ProfileState> {
                                       return ClipRRect(
                                         borderRadius: BorderRadius.circular(70),
                                         child: Image.network(
-                                          profile.getAvatar,
+                                          profile.getAvatar == '' ?
+                                          'https://i.ibb.co/MPGG9nn/avatar.jpg' : profile.getAvatar,
                                           height: 90,
                                           scale: 5,
                                         ),
@@ -279,7 +394,7 @@ class Profile extends State<ProfileState> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      ElevatedButton(onPressed: signOut, style: ElevatedButton.styleFrom(backgroundColor: Colors.orange) ,child: Text(AppLocalizations.of(context)!.signOut)),
+                      ElevatedButton(onPressed: confirmSignOut, style: ElevatedButton.styleFrom(backgroundColor: Colors.orange) ,child: Text(AppLocalizations.of(context)!.signOut)),
                       ElevatedButton(onPressed: save, child: Text(AppLocalizations.of(context)!.save)),
                     ],
                   ),
@@ -290,7 +405,7 @@ class Profile extends State<ProfileState> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      TextButton(onPressed: logOut, style: TextButton.styleFrom(foregroundColor: Colors.red), child: Text(AppLocalizations.of(context)!.deleteAccount),)
+                      TextButton(onPressed: confirmDelete, style: TextButton.styleFrom(foregroundColor: Colors.red), child: Text(AppLocalizations.of(context)!.deleteAccount),)
                     ],
                   ),
                 ),
