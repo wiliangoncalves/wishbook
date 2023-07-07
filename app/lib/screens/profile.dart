@@ -381,7 +381,6 @@ class Profile extends State<ProfileState> {
                         controller: emailController..text=profile.getEmail,
                         decoration: const InputDecoration(
                           enabled: false, 
-                          disabledBorder: UnderlineInputBorder(),
                           labelText: 'E-mail',
                           ),
                         ),

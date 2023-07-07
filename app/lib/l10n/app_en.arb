@@ -110,5 +110,9 @@
     "yes": "YES",
     "@yes": {
         "description": "Yes"
+    },
+    "readingNow": "READING NOW",
+    "@readingNow": {
+        "description": "READING NOW"
     }
 }

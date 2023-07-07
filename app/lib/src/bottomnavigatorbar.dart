@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:app/screens/home.dart';
+import 'package:app/screens/home.dart' show HomeState;
 import 'package:app/screens/profile.dart' show ProfileState;
 import 'package:app/screens/profile.dart' show getProfile;
 
@@ -20,7 +20,7 @@ class BottomNavigatorBar extends State<BottomNavigatorBarState> {
   }
 
   static final List<Widget> _widgetOptions = <Widget>[
-    const Home(),
+    const HomeState(),
     const Text('Books'),
     const Text('Collections'),
     const ProfileState(),

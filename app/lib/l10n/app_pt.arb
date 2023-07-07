@@ -25,5 +25,6 @@
     "profile": "PERFIL",
     "sureToDelete": "Você tem certeza que quer deletar",
     "sureToSignOut": "Tem certeza que deseja deslogar",
-    "yes": "SIM"
+    "yes": "SIM",
+    "readingNow": "LENDO AGORA"
 }
