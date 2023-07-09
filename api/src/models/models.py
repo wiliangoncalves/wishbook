@@ -2,13 +2,13 @@ from tortoise import Model, fields
 
 class User(Model):
     id = fields.IntField(pk = True, index = True,  AUTO_INCREMENT = True)
-    avatar = fields.CharField(max_length=255, default='https://i.ibb.co/MPGG9nn/avatar.jpg')
+    avatar = fields.CharField(max_length=255, null = False, default='https://i.ibb.co/MPGG9nn/avatar.jpg')
     firstname = fields.CharField(max_length=50, null = False)
     lastname = fields.CharField(max_length=50, null = False)
     email = fields.CharField(max_length=200, null = False, unique = True)
     password = fields.CharField(max_length=255, null = False)
     activate_link = fields.CharField(max_length=64)
-    is_verified = fields.BooleanField(default=False)
+    is_verified = fields.BooleanField(default=False, null=False)
 
 class Book(Model):
     id = fields.IntField(pk = True, index = True, AUTO_INCREMENT = True)

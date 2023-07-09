@@ -1,6 +1,5 @@
 from fastapi import FastAPI, APIRouter, status, HTTPException
 from pydantic import BaseModel
-from typing import Optional
 
 from src.models.models import User as Db_User
 
@@ -26,8 +25,10 @@ class User(BaseModel):
 
 @login.post('/')
 async def post_login(user: User):
+    print(f"Valor do email: {user.email}")
 
     data = await Db_User.filter(email=user.email).values()
+    print(f"Valor de data: {data}")
 
     if len(data) == 0:
         raise HTTPException(
