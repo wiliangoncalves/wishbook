@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:app/screens/home.dart' show HomeState;
 import 'package:app/screens/profile.dart' show ProfileState;
 import 'package:app/screens/profile.dart' show getProfile;
+import 'package:app/screens/books.dart' show BooksState;
 
 class BottomNavigatorBarState extends StatefulWidget {
   const BottomNavigatorBarState({super.key});
@@ -21,7 +22,7 @@ class BottomNavigatorBar extends State<BottomNavigatorBarState> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     const HomeState(),
-    const Text('Books'),
+    const BooksState(),
     const Text('Collections'),
     const ProfileState(),
   ];

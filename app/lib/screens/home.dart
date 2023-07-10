@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app/profileclasses/profiledata.dart' show ProfileClass;
+import 'package:app/storage/secure_storage.dart' show SecureStorage;
 
 class HomeState extends StatefulWidget {
   const HomeState({super.key});
@@ -9,6 +10,16 @@ class HomeState extends StatefulWidget {
 }
 
 class Home extends State<HomeState> {
+  @override
+  void initState() {
+    super.initState();
+    
+    SecureStorage.readData('avatar').then((value) {
+      setState(() {
+        profile.setAvatar=value ?? '';
+      });
+    });
+  }
   ProfileClass profile = ProfileClass();
 
   @override
@@ -21,10 +32,15 @@ class Home extends State<HomeState> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 const Text('READING NOW', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                Image.network(profile.getAvatar == '' ?
-                  'https://i.ibb.co/MPGG9nn/avatar.jpg' : profile.getAvatar,
-                  height: 50,
-                  scale: 1,),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: Image.network(
+                    profile.getAvatar == '' ?
+                    'https://i.ibb.co/MPGG9nn/avatar.jpg' : profile.getAvatar,
+                    height: 60,
+                    scale: 1,
+                  ),
+                )
               ],
             ),
             const Divider(
