@@ -45,7 +45,7 @@ async def get_book(read: bool, title: Optional[str] = None, genre: List[str] = Q
         'authors_id': authors_id
       })
 
-    return {"book_found": result}
+    return {"data": result}
   
   if read == True:
     books = await Db_Book.all().filter(read=True, owner_id=authorization['token']).prefetch_related('book_authors__author')
@@ -60,7 +60,7 @@ async def get_book(read: bool, title: Optional[str] = None, genre: List[str] = Q
         'authors_id': authors_id
       })
 
-    return {"book_found": result}
+    return {"data": result}
 
   return {"data": result}
 

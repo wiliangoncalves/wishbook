@@ -6,7 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import '../storage/secure_storage.dart' show SecureStorage;
 import 'package:app/screens/login.dart' show LoginState;
-import 'package:app/profileclasses/profiledata.dart' show ProfileClass;
+import 'package:app/classes/profiledata.dart' show ProfileClass;
 import 'package:image_picker/image_picker.dart';
 import 'package:http_parser/http_parser.dart' show MediaType;
 import 'package:logger/logger.dart';

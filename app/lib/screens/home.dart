@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:app/profileclasses/profiledata.dart' show ProfileClass;
+import 'package:app/classes/profiledata.dart' show ProfileClass;
 import 'package:app/storage/secure_storage.dart' show SecureStorage;
 
 class HomeState extends StatefulWidget {

@@ -26,5 +26,6 @@
     "sureToDelete": "Você tem certeza que quer deletar",
     "sureToSignOut": "Tem certeza que deseja deslogar",
     "yes": "SIM",
-    "readingNow": "LENDO AGORA"
+    "readingNow": "LENDO AGORA",
+    "readed": "Lido"
 }
